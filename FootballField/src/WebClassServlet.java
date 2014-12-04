@@ -2,6 +2,9 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 import javax.naming.InitialContext;
@@ -21,28 +24,48 @@ public class WebClassServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final int MAX_CAPACITY = 100;
 	private int numOfPeople;
-	private static final String DB_URL = "jdbc:mysql://localhost:3306/test";
-	private static final String USER_AND_PASS = "user=Football&password=field";
     private Connection conn; 
-    private static final String SELECT_STATEMENT = "SELECT * FROM ?";
+    private static final String SELECT_STATEMENT = "SELECT pid, entering, eventTime FROM People WHERE eventTime < ?";
     PreparedStatement select = null;
 	/**
      * Default constructor. 
      */
     public WebClassServlet() {
+    	/**************************************************
+    	 * The below is commented out because its kind of useless until we get the Arduino
+    	 * working. It connects to a database and gets data from it based on current time (so it gets
+    	 * all data before it). Dun dun dun...
+    	 * 
+    	 **************************************************/
+    	/*
+    	
+    	SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+    	java.util.Date curDate = new Date();
+    	String date = df.format(curDate);
+    	System.out.println(date);
+    	
     	conn = getConnection();
+    	int entering=0 , exiting =0;
     	try{
     		select = conn.prepareStatement(SELECT_STATEMENT);
-    		select.setString(1, "Example");
+    		select.setString(1, date);
+    		System.out.println(select.toString());
     		ResultSet rs = select.executeQuery();
     		while(rs.next()){
-    			String s = rs.getString(1);
-    			System.out.println(s);
+    			int i = rs.getInt(2);
+    			if(i == 1){
+    				entering++;
+    			}
+    			else{
+    				exiting++;
+    			}
     		}
+    		numOfPeople =  entering - exiting;
+    		System.out.println(numOfPeople);
     	}catch(SQLException se){
     		System.out.println("SQL Error");
     	}
-    	
+    */	
     }
 
 	/**
@@ -59,7 +82,13 @@ public class WebClassServlet extends HttpServlet {
 		
 		*/
 		String requestParam = request.getParameter("CurrentCapacity");
+		
+		
+		
 		int currentCapacity = Integer.parseInt(requestParam);
+		/*
+		 * numOfPeople = numOfPeople - currentCapacity;
+		 */
 		numOfPeople = setEnterExit(currentCapacity);
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -87,7 +116,7 @@ public class WebClassServlet extends HttpServlet {
 	private Connection getConnection(){
 		try {
 			InitialContext ic = new InitialContext();
-			DataSource ds = (DataSource) ic.lookup("java:/comp/env/jdbc/ff");
+			DataSource ds = (DataSource) ic.lookup("java:/comp/env/jdbc/footballfield");
 			if(ds == null){
 				System.out.println("Error with DataSource");
 			}
