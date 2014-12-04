@@ -51,11 +51,21 @@ $(document).ready(function(){
   var height = 50;
   var title = $("title")[0];
   var temp = 0;
+  var entering = 0;
+  var foo=new Sound("./sounds/grunt.mp3",100,false);
+  var crowd=new Sound("./sounds/crowd.mp3",100,false);
+  var cheer=new Sound("./sounds/cheer.mp3",100,false);
+  var starting = 0;
  
   var animateIn = function(){
-    if(height >= 100){
+    if(height + entering >= 100){
+      if (starting == 0)
+        crowd.start();
+      starting = 1;
       return;
     }
+    entering++;
+    starting = 0;
     var $img = $("<img src='./img/football-player.png' style='z-index: 3;' />");
     $("#background").prepend($img);
     $img.css("top", (Math.random() * (window.innerHeight - $img.height())) + "px");
@@ -68,6 +78,10 @@ $(document).ready(function(){
         height += 1;
         title.text = "Occupied: " + height + "%";
         $sea.css("height", (height) + "%");
+        // added this transition again for a more liquid "feel", but feel free to remove it
+        $sea.css('transition', 'height 1s ease');
+        foo.start();
+        entering--;
       });
   }
 
@@ -76,9 +90,13 @@ $(document).ready(function(){
     if(height <= 0){
       return;
     }
+    // WARNING: If you uncomment this, do not hold down or spam a key press.  Things can get loud quickly.
+    //cheer.start();
     height -= 1;
     title.text = "Occupied: " + height + "%";
     $sea.css("height", (height) + "%");
+    // added this transition again for a more liquid "feel", but feel free to remove it
+    $sea.css('transition', 'height 1s ease');
 
     var $img = $("<img src='./img/football-player.png' style='z-index: 3;' />");
     $("#background").prepend($img);
@@ -130,6 +148,41 @@ $(document).ready(function(){
   $("body").on("keypress", function(){
     animateOut();
   });
+  function Sound(source,volume,loop)
+  {
+    this.source=source;
+    this.volume=volume;
+    this.loop=loop;
+    var son;
+    this.son=son;
+    this.finish=false;
+    this.stop=function()
+    {
+      document.body.removeChild(this.son);
+    }
+    this.start=function()
+    {
+      if(this.finish)return false;
+      this.son=document.createElement("embed");
+      this.son.setAttribute("src",this.source);
+      this.son.setAttribute("hidden","true");
+      this.son.setAttribute("volume",this.volume);
+      this.son.setAttribute("autostart","true");
+      this.son.setAttribute("loop",this.loop);
+      document.body.appendChild(this.son);
+    }
+    this.remove=function()
+    {
+      document.body.removeChild(this.son);
+      this.finish=true;
+    }
+    this.init=function(volume,loop)
+    {
+      this.finish=false;
+      this.volume=volume;
+      this.loop=loop;
+    }
+  }
 });
 
 
