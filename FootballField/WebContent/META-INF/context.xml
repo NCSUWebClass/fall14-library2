@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
-    <Resouce name="jdbc/ff"
-        maxIdle="3" 
-        maxActive="15" url="jdbc:mysql://localhost:3306/test?createDatabaseIfNotExist=true" 
-        driverClassName="com.mysql.jdbc.Driver" 
-        password="field" 
-        user="football" 
-        type="javax.sql.DataSource" 
-        auth="Container" 
-         />   
+<Resource
+	username="root" 
+	password="npiland83739"
+	url="jdbc:mysql://localhost:3306/itrust?createDatabaseIfNotExist=true"		
+	name="jdbc/ff"
+	auth="Container"
+	type="javax.sql.DataSource"
+	driverClassName="com.mysql.jdbc.Driver"
+	maxActive="15" 
+	maxIdle="4"
+	validationQuery="Show Tables"/>
 </Context>
