@@ -1,6 +1,9 @@
-DROP TABLE IF EXISTS 'people';
 
-CREATE TABLE `people` (
+CREATE DATABASE IF NOT EXISTS footballfield;
+
+USE footballfield;
+
+CREATE TABLE IF NOT EXISTS people (
   `pid` int(11) NOT NULL AUTO_INCREMENT,
   `entering` int(11) NOT NULL,
   `eventTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
