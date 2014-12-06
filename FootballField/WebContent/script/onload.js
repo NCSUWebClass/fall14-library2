@@ -12,7 +12,29 @@ $(document).ready(function(){
   var crowd=new Sound("./sounds/crowd.mp3",100,false);
   var cheer=new Sound("./sounds/cheer.mp3",100,false);
   var starting = 0;
- 
+  /*
+  function startTime() {
+	    var today=new Date();
+	    var h=today.getHours();
+	    var t = 0;
+	    if(h >= 12) {
+	        is12 = 1;
+	    }
+	    var m=today.getMinutes();
+	    m = checkTime(m);
+	    if( is12 == 1) {
+	    document.getElementById('txt').innerHTML = (h - 12 ) +":"+m;
+	    } else {
+	    document.getElementById('txt').innerHTML = h+":"+m;
+	    }
+	    var t = setTimeout(function(){startTime()},500);
+	}
+
+	function checkTime(i) {
+	    if (i<10) {i = "0" + i};
+	    return i;
+	}
+  */
   var animateIn = function(){
     if(height + entering >= MAX_VALUE){
       return;
