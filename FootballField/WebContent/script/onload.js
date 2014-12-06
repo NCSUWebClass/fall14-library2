@@ -128,7 +128,7 @@ $(document).ready(function(){
 	    $.ajax({
 	    	  type: "GET",
 	      	  url: "./src/WebClassServlet",
-	      	  data: { "CurrentCapacity": height },
+	      	  data: { "CurrentCapacity": height, "time": (new Date()).getTime()},
 	      	  success: function(result){
 	      		  automatePeople(result);
 	      	  }
