@@ -13,6 +13,9 @@ $(document).ready(function(){
   var cheer=new Sound("./sounds/cheer.mp3",100,false);
   var starting = 0;
   
+  var colonToggle = true;
+  var time = document.getElementById("time");
+  
   function startTime() {
 	    var today=new Date();
 	    var h=today.getHours();
@@ -34,7 +37,11 @@ $(document).ready(function(){
         $("#pm").css("visibility","hidden");
         $("#am").css("visibility","show");
 	    }
-	    var t = setTimeout(function(){startTime()},500);
+	    if(colonToggle){
+	    	time.innerHTML = time.innerHTML.replace(":", " ");
+	    }
+	    colonToggle = !colonToggle;
+	    var t = setTimeout(function(){startTime()},1000);
 	}
 
 	function checkTime(i) {
@@ -135,7 +142,7 @@ $(document).ready(function(){
 	    $.ajax({
 	    	  type: "GET",
 	      	  url: "./src/WebClassServlet",
-	      	  data: { CurrentCapacity: height},
+	      	  data: { "CurrentCapacity": height, "time": (new Date()).getTime()},
 	      	  success: function(result){
 	      		  automatePeople(result);
 	      	  }
