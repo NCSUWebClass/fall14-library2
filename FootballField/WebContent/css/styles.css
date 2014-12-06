@@ -32,6 +32,11 @@ div#red_sea{
   height: 50%;
 }
 
+canvas#animated_sea{
+	position:absolute;
+	top: -6px;
+}
+
 img{
   z-index: 3;
   width: 3%;
