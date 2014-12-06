@@ -65,9 +65,7 @@ public class WebClassServlet extends HttpServlet {
 		long temp = Long.parseLong(time);
 		Date d = new Date(temp);
 		addData();
-		getEnteringExiting(temp);
-		System.out.println("Number Entering/Exiting : " + numOfPeople);
-		
+		getEnteringExiting(temp);	
 		PrintWriter out = response.getWriter();
 		out.write(""+ numOfPeople);
 		
@@ -161,7 +159,6 @@ public class WebClassServlet extends HttpServlet {
     		select = conn.prepareStatement(SELECT_STATEMENT);
     		java.sql.Timestamp date = new java.sql.Timestamp(oldDate - 1000);
     		select.setTimestamp(1, date);
-    		System.out.println(select);
     		ResultSet rs = select.executeQuery();
     		while(rs.next()){
     			int i = rs.getInt("entering");
@@ -174,7 +171,6 @@ public class WebClassServlet extends HttpServlet {
     		}
     		
     		numOfPeople =  entering - exiting;
-    		System.out.println("Total:" + numOfPeople);
     	}catch(SQLException se){
     		System.out.println("SQL Error");
     	}
