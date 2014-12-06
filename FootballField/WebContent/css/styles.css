@@ -1,0 +1,47 @@
+  @font-face {
+    font-family: 'EH';
+    src: url("../font/ehsmb.eot");
+    src: url("../font/ehsmb.eot") format("embedded-opentype"),
+    url("../font/ehsmb.woff2") format("woff2"),
+    url("../font/ehsmb.woff") format("woff"),
+    url("../font/ehsmb.ttf") format("truetype"),
+    url("../font/ehsmb.svg#ElectronicHighwaySignRegular") format("svg");
+  }
+div.background{
+  background-image: url("../img/football-field-endzone.png");
+  background-size: 100% 100%;
+  position:absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 2;
+}
+div.container{
+  position:absolute;
+  bottom: 26%;
+  height: 48%;
+  width: 100%;
+  z-index: 1;
+}
+div#red_sea{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: #FF0000;
+  height: 50%;
+}
+
+img{
+  z-index: 3;
+  width: 3%;
+  position: absolute;
+  left: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body{
+  margin: 0;
+  padding: 0;
+}
