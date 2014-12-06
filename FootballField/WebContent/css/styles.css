@@ -36,6 +36,47 @@ canvas#animated_sea{
 	position:absolute;
 	top: -6px;
 }
+div#scoreboard {
+  position: absolute;
+  top: 8.4%;
+  left: 36%;
+  width: 29.2%;
+  height: 11%;
+  z-index: 5;
+  font-size: 3.4em;
+  font-family: 'EH';
+  color: #fff7a3;
+}
+div#left_score {
+  float: left;
+  width: 27%;
+  height: 100%;
+  text-align: center;
+}
+div#am_pm {
+  float: left;
+  width: 46%;
+  height: 100%;
+}
+div#right_score {
+  float: left;
+  width:27%;
+  height: 100%;
+  text-align: center;
+}
+div#time {
+  position: absolute;
+  height: 5%;
+  top: 2.5%;
+  width: 11%;
+  z-index: 6;
+  font-size: 3em;
+  left: 45%;
+  font-family: 'EH';
+  color: #fff7a3;
+  display: block;
+  text-align: center;
+}
 
 img{
   z-index: 3;
