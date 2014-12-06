@@ -18,6 +18,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.*;
 import javax.sql.DataSource;
+
 import java.sql.*;
 /**
  * Servlet implementation class WebClassServlet
@@ -28,9 +29,9 @@ public class WebClassServlet extends HttpServlet {
 	private static final int MAX_CAPACITY = 100;
 	private int numOfPeople;
     private Connection conn; 
-    private static final String SELECT_STATEMENT = "SELECT pid, entering, eventTime FROM People WHERE eventTime < ? AND eventTime > ?";
+    private static final String SELECT_STATEMENT = "SELECT pid, entering, eventTime FROM People WHERE timediff(eventTime,?) > 0";
     PreparedStatement select = null;
-    private SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+    private SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
 	/**
      * Default constructor. 
      */
@@ -41,9 +42,9 @@ public class WebClassServlet extends HttpServlet {
     	 * all data before it). Dun dun dun...
     	 * 
     	 **************************************************/
-    	
+    	//makeDatabase();
     	conn = getConnection();
-    	makeDatabase();
+    	
     }
 
 	/**
@@ -60,15 +61,13 @@ public class WebClassServlet extends HttpServlet {
 		
 		*/
 		String requestParam = request.getParameter("CurrentCapacity");
+		String time = request.getParameter("time");
+		long temp = Long.parseLong(time);
+		Date d = new Date(temp);
+		addData();
+		getEnteringExiting(temp);
+		System.out.println("Number Entering/Exiting : " + numOfPeople);
 		
-		
-		
-		int currentCapacity = Integer.parseInt(requestParam);
-		/*
-		 * numOfPeople = numOfPeople - currentCapacity;
-		 */
-		numOfPeople = setEnterExit(currentCapacity);
-		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		out.write(""+ numOfPeople);
 		
@@ -109,7 +108,7 @@ public class WebClassServlet extends HttpServlet {
 	
 	private void makeDatabase() {
 		List<String> query = new ArrayList<String>();
-		String makeDb = "CREATE DATABASE IF NOT EXISTS footballfield";
+		//String makeDb = "CREATE DATABASE IF NOT EXISTS footballfield";
 		String useDb = "use footballfield";
 		String makeTable = "CREATE TABLE IF NOT EXISTS people (" + 
 				"pid int(11) NOT NULL AUTO_INCREMENT," +
@@ -117,7 +116,7 @@ public class WebClassServlet extends HttpServlet {
 				"eventTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
 				"PRIMARY KEY (`pid`)" +
 				") ENGINE=InnoDB DEFAULT CHARSET=utf8";
-		query.add(makeDb);
+		//query.add(makeDb);
 		query.add(useDb);
 		query.add(makeTable);
 		PreparedStatement ps;
@@ -138,11 +137,12 @@ public class WebClassServlet extends HttpServlet {
 		int j;
 		for(int i = 0; i < 5; i++) {
 			Random rand = new Random();	
-			j = rand.nextInt(1);
+			j = rand.nextInt(2);
 			try {
 				ps = conn.prepareStatement(si);
 				ps.setInt(1, j);
 				ps.execute();
+				//System.out.println(ps.toString());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -150,19 +150,21 @@ public class WebClassServlet extends HttpServlet {
 			
 		}
 	}
-	private int getEnteringExiting(String oldDate){
+	private int getEnteringExiting(long oldDate){
 		
 		int entering=0 , exiting =0;
+		/*
 		java.util.Date date = new Date();
 		String curDate = df.format(date);
-    	try{
+		*/
+		try{
     		select = conn.prepareStatement(SELECT_STATEMENT);
-    		select.setString(1, curDate);
-    		select.setString(2, oldDate);
-    		System.out.println(select.toString());
+    		java.sql.Timestamp date = new java.sql.Timestamp(oldDate - 1000);
+    		select.setTimestamp(1, date);
+    		System.out.println(select);
     		ResultSet rs = select.executeQuery();
     		while(rs.next()){
-    			int i = rs.getInt(2);
+    			int i = rs.getInt("entering");
     			if(i == 1){
     				entering++;
     			}
@@ -170,8 +172,9 @@ public class WebClassServlet extends HttpServlet {
     				exiting++;
     			}
     		}
+    		
     		numOfPeople =  entering - exiting;
-    		System.out.println(numOfPeople);
+    		System.out.println("Total:" + numOfPeople);
     	}catch(SQLException se){
     		System.out.println("SQL Error");
     	}
