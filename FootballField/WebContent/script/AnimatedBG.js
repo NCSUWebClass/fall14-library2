@@ -3,7 +3,7 @@ $(document).ready(function(){
 	  var ctx = canvas.getContext("2d");
 	  var MAX_HEIGHT = 3;
 	  
-	  ctx.fillStyle = "#FF0000";
+	  ctx.fillStyle = "#CC0000";
 	  
 	  var heights = new Array(Math.floor(canvas.width / 2));
 	  
