@@ -13,6 +13,9 @@ $(document).ready(function(){
   var cheer=new Sound("./sounds/cheer.mp3",100,false);
   var starting = 0;
   
+  var colonToggle = true;
+  var time = document.getElementById("time");
+  
   function startTime() {
 	    var today=new Date();
 	    var h=today.getHours();
@@ -23,11 +26,15 @@ $(document).ready(function(){
 	    var m=today.getMinutes();
 	    m = checkTime(m);
 	    if( is12 == 1) {
-	    document.getElementById('time').innerHTML = (h - 12 ) +":"+m;
+	      time.innerHTML = (h - 12 ) +":"+m;
 	    } else {
-	    document.getElementById('time').innerHTML = h+":"+m;
+	    	time.innerHTML = h+":"+m;
 	    }
-	    var t = setTimeout(function(){startTime()},500);
+	    if(colonToggle){
+	    	time.innerHTML = time.innerHTML.replace(":", " ");
+	    }
+	    colonToggle = !colonToggle;
+	    var t = setTimeout(function(){startTime()},1000);
 	}
 
 	function checkTime(i) {
