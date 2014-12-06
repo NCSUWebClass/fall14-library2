@@ -8,7 +8,7 @@
     url("../font/ehsmb.svg#ElectronicHighwaySignRegular") format("svg");
   }
 div.background{
-  background-image: url("../img/final-field.png");
+  background-image: url("../img/final-field1.png");
   background-size: 100% 100%;
   position:absolute;
   top: 0;
@@ -57,6 +57,22 @@ div#am_pm {
   float: left;
   width: 46%;
   height: 100%;
+}
+div#am_pm div {
+  background: url("../img/am-pm.png") no-repeat;
+  background-position: 51% 73%;
+  background-size: 41%;
+}
+div#am {
+  float:left;
+  height: 100%;
+  width: 50%;
+  
+}
+div#pm {
+  float: left;
+  height: 100%;
+  width: 50%;
 }
 div#right_score {
   float: left;

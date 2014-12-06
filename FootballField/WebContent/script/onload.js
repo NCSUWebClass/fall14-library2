@@ -16,16 +16,23 @@ $(document).ready(function(){
   function startTime() {
 	    var today=new Date();
 	    var h=today.getHours();
-	    var t = 0;
+	    var is12 = 0;
+
 	    if(h >= 12) {
-	        is12 = 1;
-	    }
+        is12 = 1;
+	    } else {
+        is12 = 0;
+      }
 	    var m=today.getMinutes();
 	    m = checkTime(m);
 	    if( is12 == 1) {
-	    document.getElementById('time').innerHTML = (h - 12 ) +":"+m;
+        document.getElementById('time').innerHTML = (h - 12 ) +":"+m;
+        $("#am").css("visibility","hidden");
+        $("#pm").css("visibility","show");
 	    } else {
-	    document.getElementById('time').innerHTML = h+":"+m;
+        document.getElementById('time').innerHTML = h+":"+m;
+        $("#pm").css("visibility","hidden");
+        $("#am").css("visibility","show");
 	    }
 	    var t = setTimeout(function(){startTime()},500);
 	}
@@ -40,7 +47,7 @@ $(document).ready(function(){
   window.onresize = function() {
     $("body").css("font-size", 100 * (window.innerWidth / 1438) + "%");
   }
-  $("body").css("font-size", 100 * (1438 / window.innerWidth) + "%");
+  $("body").css("font-size", 100 * (window.innerWidth / 1438) + "%");
 
   var animateIn = function(){
     if(height + entering >= MAX_VALUE){
