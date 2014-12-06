@@ -8,7 +8,7 @@
     url("../font/ehsmb.svg#ElectronicHighwaySignRegular") format("svg");
   }
 div.background{
-  background-image: url("../img/football-field-endzone.png");
+  background-image: url("../img/final-field.png");
   background-size: 100% 100%;
   position:absolute;
   top: 0;
@@ -30,6 +30,11 @@ div#red_sea{
   width: 100%;
   background-color: #FF0000;
   height: 50%;
+}
+
+canvas#animated_sea{
+	position:absolute;
+	top: -6px;
 }
 
 img{
