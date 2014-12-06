@@ -8,7 +8,7 @@
     url("../font/ehsmb.svg#ElectronicHighwaySignRegular") format("svg");
   }
 div.background{
-  background-image: url("../img/football-field-endzone.png");
+  background-image: url("../img/final-field.png");
   background-size: 100% 100%;
   position:absolute;
   top: 0;
