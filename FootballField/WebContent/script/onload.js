@@ -25,9 +25,19 @@ $(document).ready(function(){
     starting = 0;
     var $img = $("<img src='" + IMG_SRC + "' style='z-index: 3;' />");
     $("#background").prepend($img);
-    $img.css("top", (Math.random() * (window.innerHeight - $img.height())) + "px");
-    $img.animate({left: (window.innerWidth / 2) + "px",
-                   top: (window.innerHeight / 2) + "px"},
+    var topPosition = (Math.random() * (window.innerHeight - $img.height()));
+    $img.css("top", topPosition + "px");
+    var rotation = 0;
+    var midHeight = window.innerHeight / 2;
+    var midWidth = window.innerWidth / 2;
+    if (topPosition < midHeight) {
+      rotation = Math.atan((midHeight - topPosition) / midWidth) * 180 / Math.PI;
+    } else {
+      rotation = "-" + Math.atan((topPosition - midHeight) / midWidth) * 180 / Math.PI;
+    }
+    $img.css("transform", "rotate(" + rotation + "deg)");
+    $img.animate({left: midWidth + "px",
+                   top: midHeight + "px"},
       ANIMATION_SPEED,
       "linear", 
       function(){
@@ -61,11 +71,23 @@ $(document).ready(function(){
     var $img = $("<img src='" + IMG_SRC + "' style='z-index: 3;' />");
     $("#background").prepend($img);
 
-    $img.css({left: (window.innerWidth / 2) + "px",
-                   top: (window.innerHeight / 2) + "px"});
+    var midHeight = window.innerHeight / 2;
+    var midWidth = window.innerWidth  /2;
+    $img.css({left: (midWidth) + "px",
+                   top: (midHeight) + "px"});
+
+    var destinationFromTop = Math.random() * (window.innerHeight - $img.height());
+    var rotation = 0;
+    if (destinationFromTop < midHeight) {
+      rotation = "-" + Math.atan((midHeight - destinationFromTop) / midWidth) * 180 / Math.PI;
+    } else {
+      roation = Math.atan((destinationFromTop - midHeight) / midWidth) * 180 / Math.PI;
+    }
+
+    $img.css("transform", "rotate(" + rotation + "deg)");
     
     $img.animate({left: (window.innerWidth - $img.width()) + "px",
-                   top: (Math.random() * (window.innerHeight - $img.height())) + "px"},
+                   top: (destinationFromTop) + "px"},
       ANIMATION_SPEED,
       "linear", 
       function(){
