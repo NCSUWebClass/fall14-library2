@@ -1,10 +1,14 @@
 
 
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import javax.naming.InitialContext;
@@ -14,7 +18,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.*;
 import javax.sql.DataSource;
-
 import java.sql.*;
 /**
  * Servlet implementation class WebClassServlet
@@ -25,8 +28,9 @@ public class WebClassServlet extends HttpServlet {
 	private static final int MAX_CAPACITY = 100;
 	private int numOfPeople;
     private Connection conn; 
-    private static final String SELECT_STATEMENT = "SELECT pid, entering, eventTime FROM People WHERE eventTime < ?";
+    private static final String SELECT_STATEMENT = "SELECT pid, entering, eventTime FROM People WHERE eventTime < ? AND eventTime > ?";
     PreparedStatement select = null;
+    private SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
 	/**
      * Default constructor. 
      */
@@ -37,35 +41,9 @@ public class WebClassServlet extends HttpServlet {
     	 * all data before it). Dun dun dun...
     	 * 
     	 **************************************************/
-    	/*
-    	
-    	SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-    	java.util.Date curDate = new Date();
-    	String date = df.format(curDate);
-    	System.out.println(date);
     	
     	conn = getConnection();
-    	int entering=0 , exiting =0;
-    	try{
-    		select = conn.prepareStatement(SELECT_STATEMENT);
-    		select.setString(1, date);
-    		System.out.println(select.toString());
-    		ResultSet rs = select.executeQuery();
-    		while(rs.next()){
-    			int i = rs.getInt(2);
-    			if(i == 1){
-    				entering++;
-    			}
-    			else{
-    				exiting++;
-    			}
-    		}
-    		numOfPeople =  entering - exiting;
-    		System.out.println(numOfPeople);
-    	}catch(SQLException se){
-    		System.out.println("SQL Error");
-    	}
-    */	
+    	makeDatabase();
     }
 
 	/**
@@ -128,5 +106,75 @@ public class WebClassServlet extends HttpServlet {
 		}
 		return null;
 	}
-
+	
+	private void makeDatabase() {
+		List<String> query = new ArrayList<String>();
+		String makeDb = "CREATE DATABASE IF NOT EXISTS footballfield";
+		String useDb = "use footballfield";
+		String makeTable = "CREATE TABLE IF NOT EXISTS people (" + 
+				"pid int(11) NOT NULL AUTO_INCREMENT," +
+				"entering int(11) NOT NULL," +
+				"eventTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
+				"PRIMARY KEY (`pid`)" +
+				") ENGINE=InnoDB DEFAULT CHARSET=utf8";
+		query.add(makeDb);
+		query.add(useDb);
+		query.add(makeTable);
+		PreparedStatement ps;
+		for(int i = 0; i< query.size(); i++){
+			try {
+				ps = conn.prepareStatement(query.get(i));
+				ps.execute();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void addData() {
+		String si = "INSERT INTO people(entering) VALUES (?)";
+		PreparedStatement ps;
+		int j;
+		for(int i = 0; i < 5; i++) {
+			Random rand = new Random();	
+			j = rand.nextInt(1);
+			try {
+				ps = conn.prepareStatement(si);
+				ps.setInt(1, j);
+				ps.execute();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+	}
+	private int getEnteringExiting(String oldDate){
+		
+		int entering=0 , exiting =0;
+		java.util.Date date = new Date();
+		String curDate = df.format(date);
+    	try{
+    		select = conn.prepareStatement(SELECT_STATEMENT);
+    		select.setString(1, curDate);
+    		select.setString(2, oldDate);
+    		System.out.println(select.toString());
+    		ResultSet rs = select.executeQuery();
+    		while(rs.next()){
+    			int i = rs.getInt(2);
+    			if(i == 1){
+    				entering++;
+    			}
+    			else{
+    				exiting++;
+    			}
+    		}
+    		numOfPeople =  entering - exiting;
+    		System.out.println(numOfPeople);
+    	}catch(SQLException se){
+    		System.out.println("SQL Error");
+    	}
+		return numOfPeople;
+	}
 }
