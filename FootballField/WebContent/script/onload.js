@@ -12,6 +12,8 @@ $(document).ready(function(){
   var crowd=new Sound("./sounds/crowd.mp3",100,false);
   var cheer=new Sound("./sounds/cheer.mp3",100,false);
   var starting = 0;
+  document.getElementById("right_score").innerHTML = "" + height;
+  document.getElementById("left_score").innerHTML = "" + 100-height;
   
   var colonToggle = true;
   var time = document.getElementById("time");
@@ -88,6 +90,8 @@ $(document).ready(function(){
         height += 1;
         title.text = "Occupied: " + height + "%";
         $sea.css("height", (height) + "%");
+        document.getElementById("right_score").innerHTML = "" + height;
+        document.getElementById("left_score").innerHTML = "" + 100-height;
         // added this transition again for a more liquid "feel", but feel free to remove it
         $sea.css('transition', 'height 1s ease');
         foo.start();
@@ -108,6 +112,8 @@ $(document).ready(function(){
     height -= 1;
     title.text = "Occupied: " + height + "%";
     $sea.css("height", (height) + "%");
+    document.getElementById("right_score").innerHTML = "" + height;
+    document.getElementById("left_score").innerHTML = "" + 100-height;
     // added this transition again for a more liquid "feel", but feel free to remove it
     $sea.css('transition', 'height 1s ease');
 
