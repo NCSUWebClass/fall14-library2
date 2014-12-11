@@ -1,29 +1,22 @@
-
-
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-
 import javax.naming.InitialContext;
 import javax.servlet.http.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.*;
 import javax.sql.DataSource;
-
 import db.DBBuilder;
-
 import java.sql.*;
+
 /**
- * Servlet implementation class WebClassServlet
+ * Servlet implementation class WebClassServlet. 
+ * This class is used to act as a 
+ * web server (or Java Servlet) and essentially acted as a go-between between the Web
+ * Application and the database. This class is what allows us to dynamically, and securely,
+ * update our web application.
+ * 
+ * @author dfperry2
  */
 @WebServlet("/WebClassServlet/*")
 public class WebClassServlet extends HttpServlet {
@@ -31,43 +24,45 @@ public class WebClassServlet extends HttpServlet {
 	private static final int MAX_CAPACITY = 100;
 	private int numOfPeople;
     private Connection conn; 
-    private static final String SELECT_STATEMENT = "SELECT pid, entering, eventTime FROM People WHERE timediff(eventTime,?) > 0";
+    private static final String SELECT_STATEMENT = "SELECT entering FROM People WHERE timediff(eventTime,?) > 0";
     PreparedStatement select = null;
-    private SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
     private DBBuilder db;
 	/**
-     * Default constructor. 
+     * Default constructor. Used to create and initialize the WebClass Servlet.
+     * In this method, it gets a connection to a database (set up by the Content.xml), which is 
+     * considered the datasource. It then uses the DB Builder class to create the table in the database,
+     * and set the project up for advancement.
+     * 
+     * @param There are none.
      */
     public WebClassServlet() {
-    	/**************************************************
-    	 * The below is commented out because its kind of useless until we get the Arduino
-    	 * working. It connects to a database and gets data from it based on current time (so it gets
-    	 * all data before it). Dun dun dun...
-    	 * 
-    	 **************************************************/
-    	//makeDatabase();
+    	
     	conn = getConnection();
     	db = new DBBuilder(conn);
     	db.makeDatabase();
     }
 
 	/**
+	 * A method to respond to the ajax "GET" type coming from the JavaScript. This method
+	 * takes in a HttpServletRequest (request) from the javascript, and responds with an 
+	 * HTTPServletResponse (response). The response, in this case, is of the JSON type. It returns
+	 * the current time, and the number of people entering or exiting to the calling javascript.
+	 * 
+	 * @param request - The request sent from the JavaScript on the webpage to the servlet. This often contains data 
+	 * 	and in this case it contains the last time the webapp called to the servlet.
+	 * @param response - The response sent from the servlet back to the JavaScript.
+	 * 
+	 * @throws ServletException : This exception is thrown when there is an error in the servlet
+	 * @throws IOException: This exception is thrown when there is an error writing back to the JavaScript/Web Applicaton.
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		/*
-		response.setContentType("application/json");
-		PrintWriter out  = response.getWriter();
-		String jsonObj = "{numOfPeople:" + numOfPeople + "}";
-		System.out.println("Send json object");
-		out.print(jsonObj);
 		
-		*/
 		String requestParam = request.getParameter("CurrentCapacity");
 		String time = request.getParameter("time");
 		long temp = Long.parseLong(time);
-		Date d = new Date(temp);
 		db.addData();
 		getEnteringExiting(temp);	
 		PrintWriter out = response.getWriter();
@@ -75,23 +70,22 @@ public class WebClassServlet extends HttpServlet {
 		
 	}
 
-	private int setEnterExit(int currentCapacity) {
-		Random rand = new Random();
-		/* How we should do it 
-		int result = rand.nextInt(MAX_CAPACITY) - currentCapacity;
-		*/
-		int range = MAX_CAPACITY - currentCapacity;
-		int result = rand.nextInt(range) - 13;
-		return result;
-	}
-
 	/**
+	 * This method is required for this class to be a fully functioning servlet, however
+	 * for this project it is not used, and is just a stub.
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
 	
+	/**
+	 * A private method that uses the DataSource declared in the context.xml to create a new
+	 * datasource - the local MySQL database. It then returns this connection. The connection created
+	 * here is used for all future database interaction within the application.
+	 * 
+	 * @return the connection used to talk to the database throughout the rest of the application.
+	 */
 	private Connection getConnection(){
 		try {
 			InitialContext ic = new InitialContext();
@@ -108,34 +102,19 @@ public class WebClassServlet extends HttpServlet {
 		return null;
 	}
 	
-	/*
-	private void addData() {
-		String si = "INSERT INTO people(entering) VALUES (?)";
-		PreparedStatement ps;
-		int j;
-		for(int i = 0; i < 5; i++) {
-			Random rand = new Random();	
-			j = rand.nextInt(2);
-			try {
-				ps = conn.prepareStatement(si);
-				ps.setInt(1, j);
-				ps.execute();
-				//System.out.println(ps.toString());
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-	}
-	*/
+	/**
+	 * A private method used to figure out the number of people that have entered or exited between
+	 * the current time and the last time that the web application asked for that information. It returns 
+	 * the total number of people. If the return value is negative it means that more people left than entered,
+	 * and if it is positive it means more people entered than exited.
+	 * @param oldDate : The long representation of the last time (in milliseconds) that the Web Application asked the
+	 * 	servlet to query the database.
+	 * @return numOfPeople the net number of people entering or exiting the library in that period.
+	 */
+	
 	private int getEnteringExiting(long oldDate){
 		
 		int entering=0 , exiting =0;
-		/*
-		java.util.Date date = new Date();
-		String curDate = df.format(date);
-		*/
 		try{
     		select = conn.prepareStatement(SELECT_STATEMENT);
     		java.sql.Timestamp date = new java.sql.Timestamp(oldDate - 1000);
