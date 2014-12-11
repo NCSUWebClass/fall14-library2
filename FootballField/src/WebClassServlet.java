@@ -66,8 +66,8 @@ public class WebClassServlet extends HttpServlet {
 		db.addData();
 		getEnteringExiting(temp);
 		response.setContentType("text/json");
-		String jsonStr = "{'numOfPeople': '" + numOfPeople + "' , "
-				+ "'time': '" + new Date().getTime() + "'}"; 
+		String jsonStr = "{\"numOfPeople\": \"" + numOfPeople + "\" , "
+				+ "\"time\": \"" + new Date().getTime() + "\"}"; 
 				
 		PrintWriter out = response.getWriter();
 		out.write(jsonStr);
@@ -121,7 +121,7 @@ public class WebClassServlet extends HttpServlet {
 		int entering=0 , exiting =0;
 		try{
     		select = conn.prepareStatement(SELECT_STATEMENT);
-    		java.sql.Timestamp date = new java.sql.Timestamp(oldDate - 1000);
+    		java.sql.Timestamp date = new java.sql.Timestamp(oldDate);
     		select.setTimestamp(1, date);
     		ResultSet rs = select.executeQuery();
     		while(rs.next()){
