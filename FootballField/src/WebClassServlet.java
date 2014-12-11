@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.*;
 import javax.sql.DataSource;
 
+import db.DBBuilder;
+
 import java.sql.*;
 /**
  * Servlet implementation class WebClassServlet
@@ -32,6 +34,7 @@ public class WebClassServlet extends HttpServlet {
     private static final String SELECT_STATEMENT = "SELECT pid, entering, eventTime FROM People WHERE timediff(eventTime,?) > 0";
     PreparedStatement select = null;
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+    private DBBuilder db;
 	/**
      * Default constructor. 
      */
@@ -44,7 +47,8 @@ public class WebClassServlet extends HttpServlet {
     	 **************************************************/
     	//makeDatabase();
     	conn = getConnection();
-    	
+    	db = new DBBuilder(conn);
+    	db.makeDatabase();
     }
 
 	/**
@@ -64,7 +68,7 @@ public class WebClassServlet extends HttpServlet {
 		String time = request.getParameter("time");
 		long temp = Long.parseLong(time);
 		Date d = new Date(temp);
-		addData();
+		db.addData();
 		getEnteringExiting(temp);	
 		PrintWriter out = response.getWriter();
 		out.write(""+ numOfPeople);
@@ -104,31 +108,7 @@ public class WebClassServlet extends HttpServlet {
 		return null;
 	}
 	
-	private void makeDatabase() {
-		List<String> query = new ArrayList<String>();
-		//String makeDb = "CREATE DATABASE IF NOT EXISTS footballfield";
-		String useDb = "use footballfield";
-		String makeTable = "CREATE TABLE IF NOT EXISTS people (" + 
-				"pid int(11) NOT NULL AUTO_INCREMENT," +
-				"entering int(11) NOT NULL," +
-				"eventTime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
-				"PRIMARY KEY (`pid`)" +
-				") ENGINE=InnoDB DEFAULT CHARSET=utf8";
-		//query.add(makeDb);
-		query.add(useDb);
-		query.add(makeTable);
-		PreparedStatement ps;
-		for(int i = 0; i< query.size(); i++){
-			try {
-				ps = conn.prepareStatement(query.get(i));
-				ps.execute();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-	
+	/*
 	private void addData() {
 		String si = "INSERT INTO people(entering) VALUES (?)";
 		PreparedStatement ps;
@@ -148,6 +128,7 @@ public class WebClassServlet extends HttpServlet {
 			
 		}
 	}
+	*/
 	private int getEnteringExiting(long oldDate){
 		
 		int entering=0 , exiting =0;

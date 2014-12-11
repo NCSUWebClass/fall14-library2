@@ -10,5 +10,5 @@
 	driverClassName="com.mysql.jdbc.Driver"
 	maxActive="15" 
 	maxIdle="4"
-	validationQuery="Show Tables"/>
+	/>
 </Context>
