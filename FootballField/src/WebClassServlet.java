@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.sql.DataSource;
 import db.DBBuilder;
 import java.sql.*;
+import java.util.Date;
 
 /**
  * Servlet implementation class WebClassServlet. 
@@ -60,13 +61,16 @@ public class WebClassServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		String requestParam = request.getParameter("CurrentCapacity");
 		String time = request.getParameter("time");
 		long temp = Long.parseLong(time);
 		db.addData();
-		getEnteringExiting(temp);	
+		getEnteringExiting(temp);
+		response.setContentType("text/json");
+		String jsonStr = "{'numOfPeople': '" + numOfPeople + "' , "
+				+ "'time': '" + new Date().getTime() + "'}"; 
+				
 		PrintWriter out = response.getWriter();
-		out.write(""+ numOfPeople);
+		out.write(jsonStr);
 		
 	}
 

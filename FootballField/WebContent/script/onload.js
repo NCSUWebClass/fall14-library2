@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	
+  var dbTime = new Date().getTime();
   var IMG_SRC = "./img/football-player.gif";
   var ANIMATION_SPEED = 2250;
   var MAX_VALUE = 100;
@@ -147,10 +147,13 @@ $(document).ready(function(){
   setInterval(function(){
 	    $.ajax({
 	    	  type: "GET",
+	    	  dataType: "JSON",
 	      	  url: "./src/WebClassServlet",
-	      	  data: { "CurrentCapacity": height, "time": (new Date()).getTime()},
+	      	  data: {"time": dbTime},
 	      	  success: function(result){
-	      		  automatePeople(result);
+	      		  dbtime = parseInt(result.time);
+	      		  var numppl = result.numOfPeople;
+	      		  automatePeople(numppl);
 	      	  }
 	      }); 
   }, 5000);
