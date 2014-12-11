@@ -59,7 +59,7 @@ $(document).ready(function(){
 
 	  var ctx2 = canvas.getContext("2d");
 	  
-	  ctx2.fillStyle = "#CC0000";
+	  ctx2.fillStyle = "#DA4747";
 	  
 	  var heights2 = new Array(Math.floor(canvas.width / 2));
 	  
