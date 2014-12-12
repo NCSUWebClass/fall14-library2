@@ -31,7 +31,11 @@ $(document).ready(function(){
 	    var m=today.getMinutes();
 	    m = checkTime(m);
 	    if( is12 == 1) {
-        document.getElementById('time').innerHTML = (h - 12 ) +":"+m;
+	    if(h == 12) {
+        document.getElementById('time').innerHTML = (h ) +":"+m;
+	    } else {
+	    	document.getElementById('time').innerHTML = (h - 12 ) +":"+m;
+	    }
         $("#am").css("visibility","hidden");
         $("#pm").css("visibility","show");
 	    } else {
